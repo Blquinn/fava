@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Button } from '@/components/ui/button';
 	import { cn } from '@/utils';
 	import SidebarButton from './sidebar-button.svelte';
 	import SidebarSection from './sidebar-section.svelte';
 	import PlaceholderIcon from './placeholder-icon.svelte';
+	import LedgerSwitcher from './ledger-switcher.svelte';
 
 	let className: string | null | undefined = undefined;
 	export { className as class };
@@ -11,8 +11,13 @@
 
 <div class={cn('pb-12', className)}>
 	<div class="space-y-4 py-4 overflow-y-auto">
+    <h1 class="pl-4 pr-4 text-2xl" >Beancount</h1>
+
+    <div class="pl-2 pr-2">
+      <LedgerSwitcher />
+    </div>
+
 		<SidebarSection>
-      <span slot='heading'>Beancount</span>
 			<SidebarButton href="/income-statement">
         <PlaceholderIcon />
         Income Statement
