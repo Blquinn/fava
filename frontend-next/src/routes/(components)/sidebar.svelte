@@ -9,7 +9,7 @@
 	export { className as class };
 </script>
 
-<div class={cn('pb-12', className)}>
+<aside class={cn('pb-12', className)}>
 	<div class="space-y-4 py-4 overflow-y-auto">
     <h1 class="pl-4 pr-4 text-2xl" >Beancount</h1>
 
@@ -84,4 +84,4 @@
 			</SidebarButton>
 		</SidebarSection>
 	</div>
-</div>
+</aside>
