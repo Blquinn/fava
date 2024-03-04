@@ -25,9 +25,9 @@
 <PageContent>
 	<span slot="heading">Income Statement</span>
 
-	<div class="flex flex-col">
+	<div class="flex flex-col mt-2">
 		<!-- Heading -->
-		<div class="flex flex-row justify-between">
+		<div class="grid grid-cols-1 lg:grid-cols-2 space-y-2">
 			<div class="flex flex-row">
 				{#each currencies as currency}
 					<LabeledCheckbox bind:checked={currency.selected} classes="mr-3">
@@ -38,7 +38,7 @@
 
 			<!-- Right side of header -->
 			<div class="flex flex-row space-x-2">
-				<Tabs.Root value="account" class="w-[250px]">
+				<Tabs.Root value="account" class="w-64">
 					<Tabs.List class="grid w-full grid-cols-2">
 						<Tabs.Trigger value="account">Stacked Bars</Tabs.Trigger>
 						<Tabs.Trigger value="password">Single Bars</Tabs.Trigger>
@@ -61,7 +61,7 @@
 				</Select.Root>
 
 				<Select.Root selected={{ value: selectedInterval, label: selectedInterval }}>
-					<Select.Trigger class="w-28">
+					<Select.Trigger class="w-32">
 						<Select.Value />
 					</Select.Trigger>
 					<Select.Content>
