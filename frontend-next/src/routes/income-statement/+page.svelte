@@ -2,18 +2,9 @@
 	import PageContent from '../(components)/page-content.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Select from '$lib/components/ui/select';
-	import LabeledCheckbox from '@/components/labeled-checkbox.svelte';
 
-	interface Currency {
-		currency: string;
-		selected: boolean;
-	}
-
-	let currencies: Currency[] = [
-		{ currency: 'USD', selected: true },
-		{ currency: 'VACHR', selected: true },
-		{ currency: 'IRAUSD', selected: true }
-	];
+	let currencies: string[] = ['USD', 'VACHR', 'IRAUSD'];
+	$: selectedCurrencies = [...currencies];
 
 	let timeIntervals = ['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'];
 	let selectedInterval = 'Monthly';
@@ -25,16 +16,36 @@
 <PageContent>
 	<span slot="heading">Income Statement</span>
 
-	<div class="flex flex-col mt-2">
+	<div class="mt-2 flex flex-col">
 		<!-- Heading -->
-		<div class="grid grid-cols-1 lg:grid-cols-2 space-y-2">
-			<div class="flex flex-row">
-				{#each currencies as currency}
-					<LabeledCheckbox bind:checked={currency.selected} classes="mr-3">
-						{currency.currency}
-					</LabeledCheckbox>
-				{/each}
-			</div>
+		<div class="grid grid-cols-1 space-y-2 lg:space-y-0 lg:grid-cols-2">
+      <!-- Currency selection -->
+			<Select.Root
+				multiple
+				selected={selectedCurrencies.map((s) => {
+					return { value: s, label: s };
+				})}
+				onSelectedChange={(s) => {
+					if (s) {
+						selectedCurrencies = s.map((s) => s.value);
+					} else {
+						selectedCurrencies = [];
+					}
+				}}
+			>
+				<Select.Trigger class="w-44">
+					<Select.Value />
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Label>Currencies</Select.Label>
+						{#each currencies as currency}
+							<Select.Item value={currency} label={currency}>{currency}</Select.Item>
+						{/each}
+					</Select.Group>
+				</Select.Content>
+				<Select.Input name="unit" />
+			</Select.Root>
 
 			<!-- Right side of header -->
 			<div class="flex flex-row space-x-2">
