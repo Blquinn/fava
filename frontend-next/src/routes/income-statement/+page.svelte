@@ -2,6 +2,8 @@
 	import PageContent from '../(components)/page-content.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Select from '$lib/components/ui/select';
+	import { onMount } from 'svelte';
+	import bb, { bar } from 'billboard.js';
 
 	let currencies: string[] = ['USD', 'VACHR', 'IRAUSD'];
 	$: selectedCurrencies = [...currencies];
@@ -11,6 +13,33 @@
 
 	let units = ['At Cost', 'At Market Value', 'Units', 'Converted to USD'];
 	let selectedUnit = 'At Cost';
+
+	let chartEl: HTMLElement | undefined;
+
+	onMount(() => {
+		var chart = bb.generate({
+			data: {
+				columns: [
+					['data1', 30, 200, 100, 400, 150, 250],
+					['data2', 130, 100, 140, 200, 150, 50],
+					['data3', 130, -150, 200, 300, -200, 100]
+				],
+				type: bar(),
+				groups: [['data1', 'data2', 'data3']]
+			},
+			title: {
+				text: 'Income'
+			},
+			bar: {
+				width: {
+					ratio: 0.5
+				}
+			},
+			bindto: chartEl
+		});
+
+		return () => chart.destroy();
+	});
 </script>
 
 <PageContent>
@@ -18,6 +47,8 @@
 
 	<div class="mt-2 flex flex-col">
 		<!-- Heading -->
+    <div class="h-64 w-full" bind:this={chartEl}></div>
+
 		<div class="grid grid-cols-1 space-y-2 lg:space-y-0 lg:grid-cols-2">
       <!-- Currency selection -->
 			<Select.Root
