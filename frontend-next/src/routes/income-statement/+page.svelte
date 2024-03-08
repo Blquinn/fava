@@ -4,6 +4,7 @@
 	import * as Select from '$lib/components/ui/select';
 	import { onMount } from 'svelte';
 	import bb, { bar } from 'billboard.js';
+	import client from '@/client';
 
 	let chartEl: HTMLElement | undefined;
 	let chart: bb.Chart | undefined;
@@ -29,16 +30,18 @@
 			['data2', 130, 100, 140, 200, 150, 50],
 			['data3', 130, -150, 200, 300, -200, 100]
 		],
-		type: bar(),
+		type: bar()
 	};
-  const chartGroups = [['data1', 'data2', 'data3']];
+	const chartGroups = [['data1', 'data2', 'data3']];
+
+	let requestPromise: Promise<void> | undefined;
 
 	onMount(() => {
 		chart = bb.generate({
 			data: {
-        ...chartData,
-        groups: chartGroups,
-      },
+				...chartData,
+				groups: chartGroups
+			},
 			title: {
 				text: 'Income'
 			},
@@ -50,43 +53,47 @@
 			bindto: chartEl
 		});
 
+		requestPromise = (async () => {
+			const res = await client.getIncomeStatement();
+		})();
+
 		return () => chart?.destroy();
 	});
 
-  // Handle active chart type change.
+	// Handle active chart type change.
 	$: if (chart) {
-    chart.destroy();
+		chart.destroy();
 		if (activeChartType == 'stacked_bars') {
-      chart = bb.generate({
-        data: {
-          ...chartData,
-          groups: chartGroups,
-        },
-        title: {
-          text: 'Income'
-        },
-        bar: {
-          width: {
-            ratio: 0.5
-          }
-        },
-        bindto: chartEl
-      })
+			chart = bb.generate({
+				data: {
+					...chartData,
+					groups: chartGroups
+				},
+				title: {
+					text: 'Income'
+				},
+				bar: {
+					width: {
+						ratio: 0.5
+					}
+				},
+				bindto: chartEl
+			});
 		} else {
-      chart = bb.generate({
-        data: {
-          ...chartData,
-        },
-        title: {
-          text: 'Income'
-        },
-        bar: {
-          width: {
-            ratio: 0.5
-          }
-        },
-        bindto: chartEl
-      })
+			chart = bb.generate({
+				data: {
+					...chartData
+				},
+				title: {
+					text: 'Income'
+				},
+				bar: {
+					width: {
+						ratio: 0.5
+					}
+				},
+				bindto: chartEl
+			});
 		}
 	}
 </script>
@@ -95,91 +102,97 @@
 	<span slot="heading">Income Statement</span>
 
 	<div class="mt-2 flex flex-col">
-		<!-- Heading -->
-		<div class="h-64 w-full" bind:this={chartEl}></div>
+		{#await requestPromise}
+			<h2>Loading</h2>
+		{:then _}
+			<!-- Heading -->
+			<div class="h-64 w-full" bind:this={chartEl}></div>
 
-		<div class="grid grid-cols-1 space-y-2 lg:grid-cols-2 lg:space-y-0">
-			<!-- Currency selection -->
-			<Select.Root
-				multiple
-				selected={selectedCurrencies.map((s) => {
-					return { value: s, label: s };
-				})}
-				onSelectedChange={(s) => {
-					if (s) {
-						selectedCurrencies = s.map((s) => s.value);
-					} else {
-						selectedCurrencies = [];
-					}
-				}}
-			>
-				<Select.Trigger class="w-44">
-					<Select.Value />
-				</Select.Trigger>
-				<Select.Content>
-					<Select.Group>
-						<Select.Label>Currencies</Select.Label>
-						{#each currencies as currency}
-							<Select.Item value={currency} label={currency}>{currency}</Select.Item>
-						{/each}
-					</Select.Group>
-				</Select.Content>
-				<Select.Input name="unit" />
-			</Select.Root>
-
-			<!-- Right side of header -->
-			<div class="flex flex-row space-x-2">
-				<Tabs.Root
-					class="w-64"
-					onValueChange={(typ) => {
-						if (typ) {
-							activeChartType = typ;
+			<div class="grid grid-cols-1 space-y-2 lg:grid-cols-2 lg:space-y-0">
+				<!-- Currency selection -->
+				<Select.Root
+					multiple
+					selected={selectedCurrencies.map((s) => {
+						return { value: s, label: s };
+					})}
+					onSelectedChange={(s) => {
+						if (s) {
+							selectedCurrencies = s.map((s) => s.value);
 						} else {
-							activeChartType = 'stacked_bars';
+							selectedCurrencies = [];
 						}
 					}}
-					value={activeChartType}
 				>
-					<Tabs.List class="grid w-full grid-cols-2">
-						{#each chartTypes as chartType}
-							<Tabs.Trigger value={chartType.value}>{chartType.name}</Tabs.Trigger>
-						{/each}
-					</Tabs.List>
-				</Tabs.Root>
-
-				<Select.Root selected={{ value: selectedUnit, label: selectedUnit }}>
 					<Select.Trigger class="w-44">
 						<Select.Value />
 					</Select.Trigger>
 					<Select.Content>
 						<Select.Group>
-							<Select.Label>Unit</Select.Label>
-							{#each units as unit}
-								<Select.Item value={unit} label={unit}>{unit}</Select.Item>
+							<Select.Label>Currencies</Select.Label>
+							{#each currencies as currency}
+								<Select.Item value={currency} label={currency}>{currency}</Select.Item>
 							{/each}
 						</Select.Group>
 					</Select.Content>
 					<Select.Input name="unit" />
 				</Select.Root>
 
-				<Select.Root selected={{ value: selectedInterval, label: selectedInterval }}>
-					<Select.Trigger class="w-32">
-						<Select.Value />
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Group>
-							<Select.Label>Time Interval</Select.Label>
-							{#each timeIntervals as interval}
-								<Select.Item value={interval} label={interval}>{interval}</Select.Item>
+				<!-- Right side of header -->
+				<div class="flex flex-row space-x-2">
+					<Tabs.Root
+						class="w-64"
+						onValueChange={(typ) => {
+							if (typ) {
+								activeChartType = typ;
+							} else {
+								activeChartType = 'stacked_bars';
+							}
+						}}
+						value={activeChartType}
+					>
+						<Tabs.List class="grid w-full grid-cols-2">
+							{#each chartTypes as chartType}
+								<Tabs.Trigger value={chartType.value}>{chartType.name}</Tabs.Trigger>
 							{/each}
-						</Select.Group>
-					</Select.Content>
-					<Select.Input name="timeInterval" />
-				</Select.Root>
-			</div>
-		</div>
+						</Tabs.List>
+					</Tabs.Root>
 
-		<!-- Main Content -->
-		<div class="flex-grow"></div>
+					<Select.Root selected={{ value: selectedUnit, label: selectedUnit }}>
+						<Select.Trigger class="w-44">
+							<Select.Value />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Label>Unit</Select.Label>
+								{#each units as unit}
+									<Select.Item value={unit} label={unit}>{unit}</Select.Item>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="unit" />
+					</Select.Root>
+
+					<Select.Root selected={{ value: selectedInterval, label: selectedInterval }}>
+						<Select.Trigger class="w-32">
+							<Select.Value />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Label>Time Interval</Select.Label>
+								{#each timeIntervals as interval}
+									<Select.Item value={interval} label={interval}>{interval}</Select.Item>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="timeInterval" />
+					</Select.Root>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="flex-grow"></div>
+		{:catch error}
+			<h2>Error: {error}</h2>
+		{/await}
 	</div>
 </PageContent>

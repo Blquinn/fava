@@ -42,6 +42,7 @@ from flask import send_file
 from flask import url_for as flask_url_for
 from flask_babel import Babel  # type: ignore[import-untyped]
 from flask_babel import get_translations
+from flask_cors import CORS, cross_origin
 from markupsafe import Markup
 from werkzeug.utils import secure_filename
 
@@ -451,6 +452,7 @@ def create_app(
         read_only: Whether to run in read-only mode.
     """
     fava_app = Flask("fava")
+    CORS(json_api)
     fava_app.register_blueprint(json_api, url_prefix="/<bfile>/api")
     fava_app.json = FavaJSONProvider(fava_app)
     fava_app.app_ctx_globals_class = Context  # type: ignore[assignment]
@@ -470,6 +472,8 @@ def create_app(
         )
     else:
         fava_app.config["LEDGERS"] = None
+
+    CORS(fava_app)
 
     return fava_app
 

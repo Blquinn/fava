@@ -36,6 +36,7 @@ classifiers = [
 dependencies = [
     "Babel>=2.7,<3",
     "Flask-Babel>=1,<5",
+    "flask-cors>=4",
     "Flask>=2.2,<4",
     "Jinja2>=3,<4",
     "Werkzeug>=2.2,<4",
