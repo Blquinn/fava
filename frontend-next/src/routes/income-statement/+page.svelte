@@ -29,16 +29,16 @@
 			['data2', 130, 100, 140, 200, 150, 50],
 			['data3', 130, -150, 200, 300, -200, 100]
 		],
-		type: bar(),
+		type: bar()
 	};
-  const chartGroups = [['data1', 'data2', 'data3']];
+	const chartGroups = [['data1', 'data2', 'data3']];
 
 	onMount(() => {
 		chart = bb.generate({
 			data: {
-        ...chartData,
-        groups: chartGroups,
-      },
+				...chartData,
+				groups: chartGroups
+			},
 			title: {
 				text: 'Income'
 			},
@@ -53,40 +53,40 @@
 		return () => chart?.destroy();
 	});
 
-  // Handle active chart type change.
+	// Handle active chart type change.
 	$: if (chart) {
-    chart.destroy();
+		chart.destroy();
 		if (activeChartType == 'stacked_bars') {
-      chart = bb.generate({
-        data: {
-          ...chartData,
-          groups: chartGroups,
-        },
-        title: {
-          text: 'Income'
-        },
-        bar: {
-          width: {
-            ratio: 0.5
-          }
-        },
-        bindto: chartEl
-      })
+			chart = bb.generate({
+				data: {
+					...chartData,
+					groups: chartGroups
+				},
+				title: {
+					text: 'Income'
+				},
+				bar: {
+					width: {
+						ratio: 0.5
+					}
+				},
+				bindto: chartEl
+			});
 		} else {
-      chart = bb.generate({
-        data: {
-          ...chartData,
-        },
-        title: {
-          text: 'Income'
-        },
-        bar: {
-          width: {
-            ratio: 0.5
-          }
-        },
-        bindto: chartEl
-      })
+			chart = bb.generate({
+				data: {
+					...chartData
+				},
+				title: {
+					text: 'Income'
+				},
+				bar: {
+					width: {
+						ratio: 0.5
+					}
+				},
+				bindto: chartEl
+			});
 		}
 	}
 </script>
