@@ -20,7 +20,7 @@
 		}
 	];
 
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 1000; i++) {
 		data.push({
 			id: `mkewl${i}`,
 			amount: i * 2,
@@ -59,7 +59,7 @@
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs } = table.createViewModel(columns);
 </script>
 
-<ScrollArea orientation="vertical">
+<ScrollArea orientation="vertical" class="h-full">
 	<Table.Root {...$tableAttrs}>
 		<Table.Header>
 			{#each $headerRows as headerRow}

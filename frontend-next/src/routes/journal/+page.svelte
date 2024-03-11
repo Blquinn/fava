@@ -7,5 +7,7 @@
 <PageContent>
   <span slot="heading">Journal</span>
 
-  <DataTable />
+  <div class="flex-1 min-h-0 block">
+    <DataTable />
+  </div>
 </PageContent>

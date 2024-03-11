@@ -6,15 +6,18 @@
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 </script>
 
-<aside class="hidden
-  lg:flex lg:flex-col lg:min-h-0 lg:pt-4 lg:space-y-2">
-		<h1 class="pl-4 pr-4 text-2xl">Beancount</h1>
+<aside
+	class="hidden
+  lg:flex lg:min-h-0 lg:flex-col lg:space-y-2 lg:pt-4"
+>
+	<h1 class="pl-4 pr-4 text-2xl">Beancount</h1>
 
-		<div class="px-2">
-			<LedgerSwitcher />
-		</div>
+	<div class="px-2">
+		<LedgerSwitcher />
+	</div>
 
-		<ScrollArea orientation="vertical">
+	<div class="block flex-1 min-h-0">
+		<ScrollArea orientation="vertical" class="h-full">
 			<SidebarSection>
 				<SidebarButton href="/income-statement">
 					<PlaceholderIcon />
@@ -82,5 +85,5 @@
 				</SidebarButton>
 			</SidebarSection>
 		</ScrollArea>
-	<!-- </div> -->
+	</div>
 </aside>
