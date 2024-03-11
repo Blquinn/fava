@@ -4,6 +4,9 @@
 	import * as Select from '$lib/components/ui/select';
 	import { onMount } from 'svelte';
 	import bb, { bar } from 'billboard.js';
+	import { timeout } from '@/utils';
+	import type { IncomeStatementResponse } from './types';
+  import response from './response.json';
 
 	let chartEl: HTMLElement | undefined;
 	let chart: bb.Chart | undefined;
@@ -37,7 +40,15 @@
 	};
 	const chartGroups = [['data1', 'data2', 'data3']];
 
+  let responsePromise: Promise<void> | undefined;
+  let responseData: IncomeStatementResponse | undefined;
+
 	onMount(() => {
+    responsePromise = (async () => {
+      await timeout(500);
+      responseData = response as unknown as IncomeStatementResponse;
+    })();
+
 		chart = bb.generate({
 			data: {
 				...chartData,
@@ -190,6 +201,14 @@
 		</div>
 
 		<!-- Main Content -->
-		<div></div>
+		<div>
+      {#await responsePromise}
+        <span>Loading</span>
+      {:then}
+        <span>Loaded</span>
+      {:catch error}
+        <span>Failed to load data: {error}</span>
+      {/await}
+    </div>
 	</div>
 </PageContent>
