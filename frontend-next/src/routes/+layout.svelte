@@ -18,11 +18,9 @@
 	<div class="border-t h-full">
 		<div class="bg-background h-full">
 			<div class="h-full grid lg:grid-cols-5">
-				<Sidebar class="hidden lg:block overflow-auto" />
-				<div class="col-span-3 lg:col-span-4 lg:border-l overflow-auto">
-					<div class="px-4 py-6 lg:px-8">
-            <slot />
-					</div>
+				<Sidebar />
+				<div class="col-span-3 lg:col-span-4 lg:border-l min-h-0">
+          <slot />
 				</div>
 			</div>
 		</div>
